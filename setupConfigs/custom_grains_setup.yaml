@@ -1,0 +1,9 @@
+
+masters:
+    centos:
+        ipv4: 192.164.8.12
+
+minions:
+    centos:
+        ipv4: 192.164.8.12
+
