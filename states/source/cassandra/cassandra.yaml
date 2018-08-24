@@ -1,4 +1,6 @@
+
 {% set minion_id = grains.get('id') %}
+{% set cassandra_pillar = pillar.get('cassandra') %}
 
 cluster_name: 'Cassandra Nest'
 num_tokens: 256
@@ -6,7 +8,7 @@ hinted_handoff_enabled: true
 max_hint_window_in_ms: 10800000 # 3 hours
 hinted_handoff_throttle_in_kb: 1024
 max_hints_delivery_threads: 2
-hints_directory: /data/cassandra/hints
+hints_directory: {{ cassandra_pillar['directories']['hints_dir'] }}
 hints_flush_period_in_ms: 10000
 max_hints_file_size_in_mb: 128
 batchlog_replay_throttle_in_kb: 1024
@@ -17,8 +19,8 @@ roles_validity_in_ms: 2000
 permissions_validity_in_ms: 2000
 partitioner: org.apache.cassandra.dht.Murmur3Partitioner
 data_file_directories:
-     - /data/cassandra/data
-commitlog_directory: /opt/cassandra_commitlog
+    - {{ cassandra_pillar['directories']['data_dir'] }} 
+commitlog_directory: {{ cassandra_pillar['directories']['commitlog_dir'] }}
 disk_failure_policy: stop
 commit_failure_policy: stop
 key_cache_size_in_mb:
@@ -27,7 +29,7 @@ row_cache_size_in_mb: 0
 row_cache_save_period: 0
 counter_cache_size_in_mb:
 counter_cache_save_period: 7200
-saved_caches_directory: /data/cassandra/saved_caches
+saved_caches_directory: {{ cassandra_pillar['directories']['saved_caches_dir'] }}
 commitlog_sync: periodic
 commitlog_sync_period_in_ms: 10000
 commitlog_segment_size_in_mb: 32

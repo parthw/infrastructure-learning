@@ -60,3 +60,29 @@ configuring_cassandra:
     - template: jinja
     - source: salt://source/cassandra/
 
+
+# Creating required directories
+
+{% for dir in cassandra_pillar.get('directories').values() %}
+
+creating_directory_{{ dir }}:
+  file.directory:
+    - name: {{ dir }}
+    - user: cassandra
+    - group: cassandra
+    - mode: 755
+    - makedirs: True
+    - require:
+      - configuring_cassandra
+
+{% endfor %}
+
+
+# Starting it at startup
+
+enabling_auto_start_at_boot:
+  cmd.run:
+    - name: "systemctl enable cassandra"
+    - require:
+      - reloading_systemd_daemon
+
