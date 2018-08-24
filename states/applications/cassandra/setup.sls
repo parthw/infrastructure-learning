@@ -58,7 +58,7 @@ configuring_cassandra:
   file.recurse:
     - name: /etc/cassandra/default.conf
     - template: jinja
-    - source: salt://source/cassandra/
+    - source: salt://applications/cassandra/conf
 
 
 # Creating required directories
