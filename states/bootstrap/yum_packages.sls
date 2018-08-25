@@ -1,9 +1,4 @@
 
-# Upgrading all packages
-
-upgrading_all_packages:
-  cmd.run:
-    - name: "yum upgrade -y"
 
 # Installing epel-release
 

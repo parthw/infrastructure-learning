@@ -33,7 +33,6 @@ bootstrap:
     - tree
     - tmux
     - bash-completion
-    - nc
     - htop
     - iptraf-ng
     - iftop
