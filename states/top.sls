@@ -2,3 +2,4 @@ base:
   '*':
     - applications
     - bootstrap
+    - programmingLanguages

@@ -1,0 +1,5 @@
+
+custom_grains:
+  ipv4: 192.168.8.12
+  salt_master: True
+  cassandra: True
