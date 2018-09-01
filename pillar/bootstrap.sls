@@ -43,3 +43,6 @@ bootstrap:
     - openssl
     - openssl-devel
     - logrotate
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
