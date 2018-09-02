@@ -20,6 +20,7 @@ bootstrap:
     - gettext
     - libtool
     - patch
+    - git
     - pkgconfig
     - redhat-rpm-config
     - rpm-build

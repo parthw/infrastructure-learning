@@ -1,0 +1,36 @@
+interface: 192.168.8.12 
+ipv6: False
+publish_port: 4505
+user: root
+pidfile: /var/run/salt-master.pid
+verify_env: True
+keep_jobs: 24
+sock_dir: /var/run/salt/master
+
+gitfs_global_lock: False
+fileserver_backend:
+  - git
+
+gitfs_ssl_verify: False
+gitfs_remotes:
+  - https://:
+    - user:
+    - password:
+    - root: states
+
+gitfs_base: master
+git_pillar_branch: master
+
+ext_pillar:
+  - git:
+      - https://:
+        - root: pillar
+        - user:
+        - password:
+
+top_file_merging_strategy: same
+default_top: base
+log_file: /var/log/salt/master
+key_logfile: /var/log/salt/key.log
+log_level: info
+log_level_logfile: info
