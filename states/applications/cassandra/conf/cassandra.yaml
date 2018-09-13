@@ -35,9 +35,9 @@ commitlog_segment_size_in_mb: 32
 seed_provider:
     - class_name: org.apache.cassandra.locator.SimpleSeedProvider
       parameters:
-          - seeds:
-concurrent_reads: 48
-concurrent_writes: 64
+          - seeds: {{ cassandra_pillar['seeds'] }}
+concurrent_reads: 32
+concurrent_writes: 32
 concurrent_counter_writes: 32
 concurrent_materialized_view_writes: 32
 file_cache_size_in_mb: 2048
@@ -47,20 +47,24 @@ index_summary_capacity_in_mb:
 index_summary_resize_interval_in_minutes: 60
 trickle_fsync: false
 trickle_fsync_interval_in_kb: 10240
-storage_port: 7002
-ssl_storage_port: 7003
+storage_port: {{ cassandra_pillar['storage_port'] }}
+ssl_storage_port: {{ cassandra_pillar['ssl_storage_port'] }}
 listen_address: {{ grains['custom_grains']['ipv4']  }}
 start_native_transport: true
-native_transport_port: 9044
+native_transport_port: {{ cassandra_pillar['native_transport_port'] }}
 start_rpc: false
 rpc_address: {{ grains['custom_grains']['ipv4']  }}
-rpc_port: 9162
+rpc_port: {{ cassandra_pillar['rpc_port'] }}
 rpc_keepalive: true
 rpc_server_type: sync
 thrift_framed_transport_size_in_mb: 15
 incremental_backups: false
 snapshot_before_compaction: false
 auto_snapshot: true
+{% set seeds_list = cassandra_pillar['seeds'][1:-1].split(',') %}
+{% if grains['custom_grains']['ipv4'] in seeds_list %}
+auto_bootstrap: false
+{% endif %}
 tombstone_warn_threshold: 1000
 tombstone_failure_threshold: 100000
 column_index_size_in_kb: 64
@@ -85,13 +89,13 @@ dynamic_snitch_reset_interval_in_ms: 600000
 dynamic_snitch_badness_threshold: 0.1
 request_scheduler: org.apache.cassandra.scheduler.NoScheduler
 server_encryption_options:
-    internode_encryption: all
+    internode_encryption: none
     keystore: /etc/cassandra/conf/.keystore
     keystore_password:
     truststore: /etc/cassandra/conf/.truststore
     truststore_password:
 client_encryption_options:
-    enabled: true
+    enabled: false
     keystore: /etc/cassandra/.keystore
     keystore_password:
 internode_compression: all

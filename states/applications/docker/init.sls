@@ -63,5 +63,3 @@ enabling_auto_start_at_boot:
     - require:
       - reloading_systemd_daemon
 
-
-# is

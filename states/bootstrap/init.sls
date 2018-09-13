@@ -6,6 +6,7 @@ include:
   - bootstrap.required_dirs
   - bootstrap.sshd
   - bootstrap.default_skel
+  - bootstrap.iptable_chains
 
 
 # Creating system user as root user can't login via ssh

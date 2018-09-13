@@ -47,3 +47,4 @@ bootstrap:
     - yum-utils
     - device-mapper-persistent-data
     - lvm2
+    - sysstat
