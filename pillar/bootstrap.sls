@@ -48,3 +48,4 @@ bootstrap:
     - device-mapper-persistent-data
     - lvm2
     - sysstat
+    - iptables-services

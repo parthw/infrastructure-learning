@@ -22,3 +22,13 @@ installing_required_packages:
     - pkgs: {{ pillar['bootstrap']['packages'] }} 
     - require:
       - refreshing_yum_database
+
+
+# Enabling iptables service to start at boot
+
+enabling_iptables_service:
+  service.running:
+    - name: iptables
+    - enable: True
+    - require:
+      - installing_required_packages
