@@ -49,3 +49,4 @@ bootstrap:
     - lvm2
     - sysstat
     - iptables-services
+    - glances

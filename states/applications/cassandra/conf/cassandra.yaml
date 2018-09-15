@@ -1,5 +1,6 @@
 
 {% set cassandra_pillar = pillar.get('cassandra') %}
+{% set minion_id = grains.get('id') %}
 
 cluster_name: 'Cassandra Nest'
 num_tokens: 256
@@ -32,10 +33,16 @@ saved_caches_directory: {{ cassandra_pillar['directories']['saved_caches_dir'] }
 commitlog_sync: periodic
 commitlog_sync_period_in_ms: 10000
 commitlog_segment_size_in_mb: 32
+{% set seeds = [] %}
+{% for node_name, node_values in cassandra_pillar['cluster_topology'].items() %}
+{% if node_values['seedNode'] == True %}
+{% do seeds.append(grains['custom_grains']['salt_minions'][node_name]) %}
+{% endif %}
+{% endfor %}
 seed_provider:
     - class_name: org.apache.cassandra.locator.SimpleSeedProvider
       parameters:
-          - seeds: {{ cassandra_pillar['seeds'] }}
+          - seeds: "{{ seeds|join(',') }}"
 concurrent_reads: 32
 concurrent_writes: 32
 concurrent_counter_writes: 32
@@ -45,7 +52,7 @@ disk_optimization_strategy: ssd
 memtable_allocation_type: heap_buffers
 index_summary_capacity_in_mb:
 index_summary_resize_interval_in_minutes: 60
-trickle_fsync: false
+trickle_fsync: true
 trickle_fsync_interval_in_kb: 10240
 storage_port: {{ cassandra_pillar['storage_port'] }}
 ssl_storage_port: {{ cassandra_pillar['ssl_storage_port'] }}
@@ -61,8 +68,7 @@ thrift_framed_transport_size_in_mb: 15
 incremental_backups: false
 snapshot_before_compaction: false
 auto_snapshot: true
-{% set seeds_list = cassandra_pillar['seeds'][1:-1].split(',') %}
-{% if grains['custom_grains']['ipv4'] in seeds_list %}
+{% if cassandra_pillar['cluster_topology'][minion_id]['seedNode'] == True %}
 auto_bootstrap: false
 {% endif %}
 tombstone_warn_threshold: 1000

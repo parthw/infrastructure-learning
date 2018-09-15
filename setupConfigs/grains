@@ -1,7 +1,10 @@
 
 custom_grains:
-  ipv4: 192.168.8.12
+  ipv4: 192.168.8.12 
   trusted_ip_ranges: 
     - 192.168.8.0/24
   salt_master: True
+  salt_minions:
+    centos: 192.168.8.12
+    minion: 192.168.8.13
   cassandra: True

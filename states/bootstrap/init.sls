@@ -7,6 +7,7 @@ include:
   - bootstrap.sshd
   - bootstrap.default_skel
   - bootstrap.iptable_chains
+  - bootstrap.finish_bootstrap
 
 
 # Creating system user as root user can't login via ssh

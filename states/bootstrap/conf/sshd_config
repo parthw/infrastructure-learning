@@ -24,5 +24,4 @@ AcceptEnv XMODIFIERS
 X11Forwarding yes
 ClientAliveInterval  15
 ClientAliveCountMax 4
-#Banner /etc/banner-note
-#Subsystem  sftp  /usr/libexec/openssh/sftp-server
+Banner /etc/banner-note

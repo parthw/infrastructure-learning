@@ -6,7 +6,6 @@ cassandra:
   storage_port: 7002
   native_transport_port: 9044
   rpc_port: 9162
-  seeds: '"192.168.8.12"'
   directories:
     hints_dir: /data/cassandra/hints
     data_dir: /data/cassandra/data
@@ -18,6 +17,8 @@ cassandra:
     centos:
       datacenter: D1
       rack: Rack1
+      seedNode: True
     minion:
       datacenter: D2
       rack: Rack2
+      seedNode: True

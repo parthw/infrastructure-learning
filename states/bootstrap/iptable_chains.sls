@@ -202,16 +202,18 @@ iptables_dports_adding_OUT-SALT_to_OUTBOUND:
     - save: True
 
 
-{% for trusted_range in grains['custom_grains']['trusted_ip_ranges']  %}
+{% for minion_ip in grains['custom_grains']['salt_minions'].values()  %}
 
 
 # Allowing all trusted hosts in IN-SALT
 
-allowing_{{ trusted_range  }}_hosts_IN-SALT:
+{% if grains['custom_grains']['salt_master'] == True or minion_ip == grains['master'] %}
+
+allowing_{{ minion_ip }}_IN-SALT:
   iptables.insert:
     - position: 1
     - chain: IN-SALT
-    - source: {{ trusted_range }}
+    - source: {{ minion_ip }}
     - jump: ACCEPT
     - save: True
     - require:
@@ -224,11 +226,11 @@ allowing_{{ trusted_range  }}_hosts_IN-SALT:
 
 # Allowing all trusted hosts in OUT-SALT
 
-allowing_{{ trusted_range}}_hosts_OUT-SALT:
+allowing_{{ minion_ip }}_OUT-SALT:
   iptables.insert:
     - position: 1
     - chain: OUT-SALT
-    - destination: {{ trusted_range }}
+    - destination: {{ minion_ip }}
     - jump: ACCEPT
     - save: True
     - require:
@@ -238,6 +240,7 @@ allowing_{{ trusted_range}}_hosts_OUT-SALT:
       - iptables_sports_adding_OUT-SALT_to_OUTBOUND
 {% endif %}
 
+{% endif %}
 
 {% endfor  %}
 
@@ -253,8 +256,12 @@ creating_log_rule_in_OUTPUT_chain:
     - save: True
     - require:
       - iptables_adding_OUTBOUND_to_OUTPUT
+{% for minion_ip in grains['custom_grains']['salt_minions'].values()  %}
+{% if grains['custom_grains']['salt_master'] == True or minion_ip == grains['master'] %}
+      - allowing_{{ minion_ip }}_OUT-SALT
+{% endif %}
+{% endfor %}
 {% for trusted_range in grains['custom_grains']['trusted_ip_ranges']  %}
-      - allowing_{{ trusted_range }}_hosts_OUT-SALT
       - allowing_{{ trusted_range }}_port_22_in_OUTPUT
 {% endfor %}
 
@@ -270,8 +277,12 @@ creating_log_rule_in_INPUT_chain:
     - save: True
     - require:
       - iptables_adding_INBOUND_to_INPUT
+{% for minion_ip in grains['custom_grains']['salt_minions'].values()  %}
+{% if grains['custom_grains']['salt_master'] == True or minion_ip == grains['master'] %}
+      - allowing_{{ minion_ip }}_IN-SALT
+{% endif %}
+{% endfor %}
 {% for trusted_range in grains['custom_grains']['trusted_ip_ranges']  %}
-      - allowing_{{ trusted_range }}_hosts_IN-SALT
       - allowing_{{ trusted_range }}_port_22_in_INPUT
 {% endfor  %}
 
@@ -287,6 +298,7 @@ creating_drop_rule_in_INPUT_chain:
     - require:
       - creating_log_rule_in_INPUT_chain
       - creating_log_rule_in_OUTPUT_chain
+      - installing_required_packages
 
 
 # Adding DROP rule in OUTPUT chain
@@ -300,6 +312,7 @@ creating_drop_rule_in_OUTPUT_chain:
     - require:
       - creating_log_rule_in_OUTPUT_chain
       - creating_log_rule_in_INPUT_chain
+      - installing_required_packages
 
 
 # Adding default policies in iptables for INPUT
