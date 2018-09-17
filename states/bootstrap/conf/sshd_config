@@ -4,7 +4,7 @@ HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 Protocol 2
 Ciphers aes256-ctr,aes192-ctr,aes128-ctr
-KexAlgorithms diffie-hellman-group-exchange-sha256
+KexAlgorithms diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
 MACs hmac-sha2-256,hmac-sha2-512
 LogLevel INFO
 SyslogFacility AUTHPRIV

@@ -11,6 +11,18 @@ def _read_master_grains():
     return master_grains['custom_grains']
 
 
+def update_all_minion_grains():
+    """
+    """
+    master_grains = _read_master_grains()
+    salt_minions = master_grains['salt_minions']
+    client = salt.client.LocalClient(__opts__['conf_file'])
+    command_on_minions = """ python -c "import yaml; minion_grains=yaml.load(open('/etc/salt/grains')); minion_grains['custom_grains']['salt_minions'].update({0}); yaml.dump(minion_grains, open('/etc/salt/grains', 'w'), default_flow_style=False)" """.format(salt_minions)
+    minion_output = client.cmd('*', 'cmd.run' , [command_on_minions])
+    return minion_output
+
+
+
 def bootstrap_grains(minion, ipv4, trusted_ip_ranges=None):
     """
     """
