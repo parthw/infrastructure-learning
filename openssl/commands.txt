@@ -1,4 +1,5 @@
 # About Files
+# ssl.conf: openssl configuration used for the mentioned commands
 # ca.key: Certificate Authority private key file (this shouldn't be shared in real-life)
 # ca.crt: Certificate Authority trust certificate
 # server.key: Server private key, password protected (this shouldn't be shared)
@@ -10,18 +11,16 @@
 # This will be used to generate certificates [DO NOT SHARE]
 echo -n MYRANDOMCAPASSPHRASE > capassfile
 
-# Changes these CN's to match your hosts in your environment if needed.
-SERVER_CN=127.0.0.1
 
 # Step 1: Generate Certificate Authority + Trust Certificate (ca.crt)
 openssl genrsa -passout file:capassfile -aes256 -out ca.key 4096
-openssl req -new -x509 -days 365 -key ca.key -out ca.crt -subj "/CN=${SERVER_CN}"
+openssl req -new -x509 -days 3650 -key ca.key -out ca.crt -config ssl.conf
 
 # Step 2: Generate the Server Private Key (server.key)
 openssl genrsa -out server.key 4096
 
 # Step 3: Get a certificate signing request from the CA (server.csr)
-openssl req -new -key server.key -out server.csr -subj "/CN=${SERVER_CN}"
+openssl req -new -key server.key -out server.csr -config ssl.conf
 
 # Step 4: Sign the certificate with the CA we created (it's called self signing) - server.crt
-openssl x509 -req -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt
+openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt -extensions req_text -extfile ssl.conf
