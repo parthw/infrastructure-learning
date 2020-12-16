@@ -23,4 +23,4 @@ openssl genrsa -out server.key 4096
 openssl req -new -key server.key -out server.csr -config ssl.conf
 
 # Step 4: Sign the certificate with the CA we created (it's called self signing) - server.crt
-openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt -extensions req_text -extfile ssl.conf
+openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt -extensions req_ext -extfile ssl.conf
