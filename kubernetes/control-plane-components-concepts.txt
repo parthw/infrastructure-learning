@@ -1,0 +1,19 @@
+Components of kubernetes control plane - 
+
+1. api server - 
+It acts as a frontend api to accept the requests from kubectl or others.
+
+2. etcd - 
+A key value store used by kubernetes to manage all the data.
+
+3. scheduler - 
+Responsible for scheduling or distributing containers across multiple nodes. It assigns containers to nodes.
+
+4. controllers - 
+Responsible for orchestration. If any nodes, containers, endpoints goes down, controllers manage them by bringing up new containers in such cases.
+
+5. container runtime - 
+Underline software that is used to run containers.
+
+6. kubelet - 
+It is running on all the nodes. It ensures containers are nodes as expected.

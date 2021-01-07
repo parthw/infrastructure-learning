@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      env:
+        - name: HELLO
+          valueFrom:
+            configMapKeyRef:
+              name: mymap
+              key: HELLO

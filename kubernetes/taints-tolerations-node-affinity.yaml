@@ -1,0 +1,28 @@
+# kubectl taint nodes <node-name> key1=value1:NoSchedule
+# kubectl label nodes <node-name> key1=value1
+apiVerson: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: serverType
+              operator: In
+              values:
+                - web
+  tolerations:
+    - key: "serverType"
+      operator: "Equal"
+      value: "web"
+      effect: "NoSchedule"
+    - key: "serverType"
+      operator: "Equal"
+      value: "web"
+      effect: "NoExecute"
