@@ -83,7 +83,7 @@ source $ZSH/oh-my-zsh.sh
 # My configurations
 
 # SSH Jump
-alias win92="ssh -L <Port>:<ServerIP>:<ServerPort> -f -q -N -l parth jb"
+alias ssh-jump="ssh -L <Port>:<ServerIP>:<ServerPort> -f -q -N -l parth jb"
 
 # Kubernetes 
 alias busybox='kubectl run -i --tty busybox --image=busybox --restart=Never --rm -- sh'
@@ -92,8 +92,6 @@ alias busybox='kubectl run -i --tty busybox --image=busybox --restart=Never --rm
 alias shared_services_login="gsts --aws-role-arn arn:aws:iam::<AccountID>:role/<RoleName> --idp-id <IDP-ID> --sp-id <SPD-ID> --aws-profile shared-services"
 
 # Personal Projects
-alias mongodb_start="brew services start mongodb-community@4.4"
-alias mongodb_stop="brew services stop mongodb-community@4.4"
 alias postgres_start="brew services start postgres"
 alias postgres_stop="brew services stop postgres"
 
@@ -107,6 +105,8 @@ export PATH=/opt/apache-maven-3.6.3/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/pl
 
 # for autocompletion
 complete -C '/usr/local/bin/aws_completer' aws
+source <(kubectl completion zsh)
+source <(helm completion zsh)
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
