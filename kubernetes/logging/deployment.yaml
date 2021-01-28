@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-server
+  labels:
+    app: my-server
+spec:
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-server
+  
+  
+  template:
+    metadata:
+      labels:
+        app: my-server
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: alpha.eksctl.io/nodegroup-name
+                operator: In
+                values:
+                - "app-nodes-02"
+      tolerations:
+        - key: "nodegroup-name"
+          operator: "Equal"
+          value: "app-nodes-02"
+          effect: "NoSchedule"
+
+      volumes:
+      - name: app-cert-secret
+        secret:
+          secretName: app-cert
+          items:
+          - key: app-cert.p12
+            path: app-cert.p12
+      - name: vault-secret
+        secret:
+          secretName: vault.txt
+          items:
+          - key: vault.txt
+            path: vault.txt
+      - name: fluentbit-config
+        configMap:
+          name: fluentbit-config
+      - name: applog
+        emptyDir: {}
+
+      containers:
+      - name: my-server
+        image: ecr-link/mymy/my-server:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: app-cert-secret
+          readOnly: true
+          mountPath: /opt/mymy/apps/properties/cert
+        - name: vault-secret
+          readOnly: true
+          mountPath: /opt/mymy/apps/properties/vault
+        - name: applog
+          mountPath: /opt/mymy/apps/logs
+        ports:
+        - name: my-server
+          containerPort: 8080
+        env:
+        - name: KEY
+          valueFrom:
+            secretKeyRef:
+              name: ssl-app-secrets
+              key: key
+        - name: PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: ssl-app-secrets
+              key: password
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            scheme: HTTPS
+            port: 8080
+          initialDelaySeconds: 30
+          failureThreshold: 2
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+            scheme: HTTPS
+          initialDelaySeconds: 45
+          failureThreshold: 2
+          periodSeconds: 10
+
+      - name: fluentbit-log-collector
+        image: 906394416424.dkr.ecr.ap-south-1.amazonaws.com/aws-for-fluent-bit:latest
+        volumeMounts:
+        - name: applog
+          mountPath: /var/log
+        - name: fluentbit-config
+          mountPath: /fluent-bit/etc
